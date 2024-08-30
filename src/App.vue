@@ -10,14 +10,14 @@
     <div class="absolute right-0 bottom-0 md:opacity-100 opacity-50">
       <img src="./img/Ellipse25.svg" alt="Нижний правый эллипс SVG" />
     </div>
-    <div class="absolute left-[500px] top-24">
+    <div class="absolute left-[500px] top-24 z-10">
       <img src="./img/Planes.svg" alt="SVG самолетиков" class="w-auto h-auto" />
     </div>
-    <div class="absolute left-[350px] top-28">
+    <div class="absolute left-[350px] top-28 z-10">
       <img src="./img/Coins.svg" alt="SVG монет" class="w-auto h-auto" />
     </div>
 
-    <header class="w-full flex justify-between items-center py-4">
+    <header class="w-full flex justify-between items-center py-4 relative">
       <div class="flex items-center space-x-2 md:space-x-4">
         <a href="#"><img src="./img/icon-tg.svg" alt="Telegram" class="w-6 h-6 md:w-auto md:h-auto" /></a>
         <a href="#"><img src="./img/icon-twitter.svg" alt="Twitter" class="w-6 h-6 md:w-auto md:h-auto" /></a>
@@ -29,7 +29,7 @@
       </button>
     </header>
 
-    <section class="w-full max-w-5xl mx-auto text-center mt-24">
+    <section class="w-full max-w-5xl mx-auto text-center mt-24 z-20 relative">
       <h2 class="text-5xl md:text-7xl font-semibold mb-5">Lorem ipsum dolor<br>sit amet</h2>
       <p class="text-lg md:text-xl mb-7">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt dignissimos reiciendis<br class="hidden md:inline">saepe. Cumque eaque et ipsum maiores?</p>
       <button class="bg-gradient-to-r from-[#8061FB] to-[#F48EE3] w-[200px] h-[60px] md:w-[294px] md:h-[94px] rounded-full hover:bg-gradient-to-r hover:from-[#F48EE3] hover:to-[#8061FB] transition-colors duration-700 font-bold text-xl md:text-3xl">
