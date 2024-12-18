@@ -1,250 +1,493 @@
 <template>
-    <div class="bg-black min-h-screen text-white relative overflow-hidden">
-        <!-- Header -->
-        <header class="w-full flex justify-between items-center py-6 px-8">
-            <div class="flex items-center space-x-4">
-                <a href="#" class="hover:opacity-80">
-                    <!-- <img src="@/assets/telegram-icon.svg" alt="Telegram" class="w-6 h-6" /> -->
-                </a>
-                <a href="#" class="hover:opacity-80">
-                    <!-- <img src="@/assets/twitter-icon.svg" alt="Twitter" class="w-6 h-6" /> -->
-                </a>
-                <a href="#" class="text-[#B1FF00] hover:opacity-80 highlight-text">News</a>
-            </div>
-
-            <div class="flex-shrink-0">
-                <!-- <img src="@/assets/tank-bank-logo.svg" alt="Tank Bank" class="h-12" /> -->
-            </div>
-
-            <button class="bg-[#B1FF00] text-black px-8 py-3 rounded-full font-bold hover:bg-opacity-80 transition-all glow-button">
-                Play Now
-            </button>
-        </header>
-
-        <!-- Hero Section -->
-        <section class="relative pt-20 pb-32 text-center px-4">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-6xl font-bold mb-6">
-                    <span class="text-[#B1FF00] highlight-text">TANK</span> BATTLE
-                </h1>
-                <p class="text-xl mb-12 text-gray-300">
-                    [Your text will be here]
-                </p>
-                <button class="bg-[#B1FF00] text-black px-12 py-4 rounded-full font-bold text-xl hover:bg-opacity-80 transition-all glow-button">
-                    Start Game
+    <div class="bg-black min-h-screen text-white">
+        <!-- Шапка -->
+        <header class="w-full p-4" :class="{ 'header-scrolled': isScrolled }">
+            <div class="flex justify-between items-center max-w-6xl mx-auto">
+                <div class="logo-animation">
+                    <img src="./img/TANK-BANK.svg" alt="Tank Bank Logo" class="h-12" />
+                </div>
+                <button
+                    @mouseover="handleButtonHover"
+                    @mouseout="handleButtonLeave"
+                    class="play-button bg-[#1A2F00] text-[#B1FF00] text-aw px-8 py-2 rounded relative overflow-hidden"
+                >
+                    <span class="relative z-10">Play</span>
+                    <div class="button-glow"></div>
                 </button>
             </div>
-        </section>
+        </header>
 
-        <!-- Features -->
-        <section class="py-20 bg-black/50">
-            <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div v-for="feature in features" :key="feature"
-                     class="text-center p-8 border border-[#B1FF00] rounded-lg feature-card">
-                    <h3 class="text-[#B1FF00] text-2xl font-bold mb-4">{{ feature }}</h3>
+        <main class="max-w-6xl mx-auto px-4 pt-8">
+            <!-- Новогодний баннер -->
+            <div class="mb-8 mr-3 hover:scale-105  transition-transform cursor-pointer flex items-center">
+                <img src="./img/HAPPY-NY.png" alt="Happy New Year" class="" />
+
+            </div>
+
+            <!-- Снежинки -->
+            <div v-if="showSnowfall" class="snowfall-container">
+                <div v-for="n in 50" :key="n" class="snowflake" :style="getRandomSnowflakeStyle()"></div>
+            </div>
+
+            <!-- Главный заголовок -->
+            <div class="text-center mb-8">
+                <h1
+                    class="text-2xl mb-4 title-animation"
+                    :class="{ 'title-visible': titleVisible }"
+                    v-intersect="handleTitleIntersect"
+                >
+                    Realtime 2D-shooter with
+                    <span class="text-[#B1FF00] text-aw glow-text">real money</span>
+                    withdrawal inside Telegram
+                </h1>
+                <div class="text-center">
+                    <img src="./img/1.svg" alt="#1" class="h-8 mx-auto" />
                 </div>
             </div>
-        </section>
 
-        <!-- Roadmap -->
-        <section class="py-20 px-4">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-4xl font-bold text-center mb-16">
-                    <span class="text-[#B1FF00] highlight-text">Road</span>map
-                </h2>
-                <div class="space-y-8">
-                    <div v-for="(phase, index) in roadmap" :key="index"
-                         class="border border-[#B1FF00] rounded-lg p-6 hover:bg-[#B1FF00]/5 transition-all feature-card">
-                        <h3 class="text-[#B1FF00] text-2xl font-bold mb-4">{{ phase.date }}</h3>
-                        <ul class="space-y-2">
-                            <li v-for="(item, itemIndex) in phase.items" :key="itemIndex"
-                                class="flex items-start">
-                                <span class="w-2 h-2 bg-[#B1FF00] rounded-full mr-4 mt-2 flex-shrink-0"></span>
-                                <span>{{ item }}</span>
-                            </li>
-                        </ul>
+            <!-- Секция с танком -->
+            <div class="relative w-full aspect-video mb-12 tank-container" @mousemove="handleTankMovement" ref="tankContainer">
+                <img src="./img/tank.png" alt="Tank" class="w-full h-full object-contain tank-element" :style="tankPosition" />
+            </div>
+
+            <!-- Кнопки функций -->
+            <div class="grid grid-cols-3 gap-4 mb-16">
+                <div v-for="(feature, index) in features" :key="feature.title"
+                     :class="[
+            'p-4 rounded transform -skew-x-12 feature-card',
+            feature.highlighted
+        ]"
+                     :style="getFeatureDelay(index)"
+                     @click="handleFeatureClick(feature)"
+                >
+                    <div class="transform skew-x-12 flex items-center justify-center">
+                        <img :src="`${feature.icon}`" :alt="feature.title" class="mr-2 icon-pulse" />
+                        <span class="font-bold">{{ feature.title }}</span>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Team Section -->
-        <section class="py-20 px-4">
-            <div class="max-w-6xl mx-auto">
-                <h2 class="text-4xl font-bold text-center mb-16">
-                    <span class="text-[#B1FF00] highlight-text">Our</span> Story
-                </h2>
-                <div class="text-center max-w-4xl mx-auto mb-16">
-                    <p class="text-xl leading-relaxed mb-8">
-                        Мы начали как группа школьных друзей, разделяющих страсть к играм и технологиям. Несмотря на то, что жизнь разбросала нас по разным уголкам мира - от Сан-Франциско до Сингапура, от Берлина до Токио - наша дружба и общая мечта создать что-то уникальное только окрепли.
-                    </p>
-                    <p class="text-xl leading-relaxed">
-                        Tank Bank - это не просто игра, это воплощение нашей общей идеи о том, как должны выглядеть современные игры: захватывающий геймплей, честная экономика и настоящее коммьюнити.
-                    </p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div v-for="location in locations" :key="location"
-                         class="text-center p-8 border border-[#B1FF00] rounded-lg feature-card">
-                        <h3 class="text-[#B1FF00] text-2xl font-bold mb-4">{{ location }}</h3>
-                        <p class="text-gray-400">Development Hub</p>
-                    </div>
+            <!-- Дата выхода -->
+            <div
+                class="text-center mb-16 countdown-container"
+                v-intersect="handleCountdownIntersect"
+            >
+                <div class="text-gray-400 mb-2">Release</div>
+                <div class="text-3xl font-bold">
+                    <span class="countdown-number">{{ countdownData.days }}</span> days
+                    <span class="countdown-number">{{ countdownData.hours }}</span> hours
+                    <span class="countdown-number">{{ countdownData.minutes }}</span> minutes
                 </div>
             </div>
-        </section>
 
-        <!-- Wallet Section -->
-        <section class="py-20 bg-black/50">
-            <div class="max-w-6xl mx-auto px-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <h2 class="text-4xl font-bold mb-6">
-                            <span class="text-[#B1FF00] highlight-text">Crypto</span> Wallet
-                        </h2>
-                        <p class="text-xl mb-8 text-gray-300">
-                            Secure crypto transactions for in-game operations
+            <!-- Центры разработки -->
+            <!-- Добавляем секцию Our Story после счетчика -->
+            <div class="text-center mb-16">
+                <div class="flex flex-col items-center justify-center">
+                    <!-- Иконка и заголовок -->
+                    <div class="mb-8">
+                        <img src="./img/story-icon.svg" alt="Our Story" class="h-12 mx-auto mb-4" />
+                        <div class="text-2xl font-bold">Our story</div>
+                    </div>
+
+                    <!-- Основной текст -->
+                    <div class="max-w-3xl mx-auto space-y-6 text-center">
+                        <p class="text-gray-300">
+                            We started as a group of believers who shared a passion for games and technology.
                         </p>
-                        <div class="flex flex-wrap gap-4">
-                            <div v-for="crypto in cryptocurrencies" :key="crypto"
-                                 class="bg-black/80 p-4 rounded-lg feature-card">
-                                <span class="text-[#B1FF00]">{{ crypto }}</span>
-                            </div>
+
+                        <p class="text-gray-300">
+                            Although life has taken us all over the world - from
+                            <span class="text-[#B1FF00] text-aw">San Francisco to Singapore</span>, from
+                            <span class="text-[#B1FF00] text-aw">Berlin to Tokyo</span> - our team and shared dream of creating something unique has only grown
+                            <span class="text-[#B1FF00] text-aw">stronger</span>.
+                        </p>
+
+                        <p class="text-gray-300">
+                            <span class="text-white font-bold">Tank Bank</span> the first game in its class, it's an embodiment of our shared idea of what modern games should look like:
+                            <span class="text-[#B1FF00] text-aw">addictive gameplay</span>,
+                            <span class="text-[#B1FF00] text-aw">fair economy</span> and a
+                            <span class="text-[#B1FF00] text-aw">real community</span>.
+                        </p>
+                    </div>
+
+                    <!-- Development Hubs -->
+                    <div class="grid grid-cols-3 gap-8 w-full mt-12">
+                        <div v-for="(hub, index) in developmentHubs" :key="hub.name"
+
+                        >
+                            <img :src="`${hub.icon}`" :alt="hub.name" class="mx-auto" />
+
+                            <p class="text-gray-500">Development hub</p>
                         </div>
                     </div>
-                    <div class="relative">
-                        <div class="aspect-square bg-[#B1FF00]/10 rounded-lg feature-card"></div>
-                    </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="py-8 border-t border-[#B1FF00]/20">
-            <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-                <div class="text-sm text-gray-500">© 2024 Tank Bank. All rights reserved.</div>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-[#B1FF00] hover:opacity-80 highlight-text">Terms</a>
-                    <a href="#" class="text-[#B1FF00] hover:opacity-80 highlight-text">Privacy</a>
-                </div>
-            </div>
-        </footer>
+        </main>
     </div>
 </template>
 
 <script>
+import pvpIcon from '/src/img/pvp.png'
+import earnIcon from '/src/img/earn.png'
+import matchIcon from '/src/img/match.png'
+import americaIcon from '/src/img/america.png'
+import europeIcon from '/src/img/europe.png'
+import asiaIcon from '/src/img/asia.png'
+
 export default {
     name: 'TankBankLanding',
     data() {
         return {
-            features: ['PVP Battles', 'Earn Crypto', 'Weekly Tournaments'],
-            cryptocurrencies: ['BTC', 'ETH', 'USDT', 'BNB'],
-            locations: ['Americas', 'Europe', 'Asia'],
-            roadmap: [
+            isScrolled: false,
+            showSnowfall: false,
+            titleVisible: false,
+            activeHub: null,
+            tankPosition: {
+                transform: 'translate(0px, 0px) rotate(0deg)'
+            },
+            countdownData: {
+                days: 0,
+                hours: 0,
+                minutes: 0
+            },
+            features: [
                 {
-                    date: 'December 2024',
-                    items: [
-                        'Запуск альфа-версии игры Tank Bank',
-                        'Базовая механика танковых сражений',
-                        'Интеграция криптокошелька'
-                    ]
+                    // title: 'PVP-Battles',
+                    highlighted: true,
+                    icon: pvpIcon
                 },
                 {
-                    date: 'January 2025',
-                    items: [
-                        'Система матчмейкинга',
-                        'Рейтинговые бои',
-                        'Система достижений'
-                    ]
+                    // title: 'Earn crypto',
+                    highlighted: false,
+                    icon: earnIcon
                 },
                 {
-                    date: 'February 2025',
-                    items: [
-                        'Турнирная система',
-                        'Внутриигровой маркетплейс',
-                        'Система наград за активность'
-                    ]
+                    // title: 'Quick match',
+                    highlighted: true,
+                    icon: matchIcon
+                }
+            ],
+            developmentHubs: [
+                {
+                    name: 'America',
+                    icon: americaIcon
                 },
                 {
-                    date: 'March 2025',
-                    items: [
-                        'Клановая система',
-                        'Специальные события',
-                        'Расширенная система прогрессии'
-                    ]
+                    name: 'Europe',
+                    icon: europeIcon
+                },
+                {
+                    name: 'Asia',
+                    icon: asiaIcon
                 }
             ]
         }
+    },
+    mounted() {
+        window.addEventListener('scroll', this.handleScroll)
+        this.startCountdown()
+    },
+    methods: {
+        handleScroll() {
+            this.isScrolled = window.scrollY > 50
+        },
+        toggleSnowfall() {
+            this.showSnowfall = !this.showSnowfall
+        },
+        getRandomSnowflakeStyle() {
+            return {
+                '--fall-duration': `${Math.random() * 3 + 2}s`,
+                '--fall-delay': `${Math.random() * 2}s`,
+                left: `${Math.random() * 100}%`
+            }
+        },
+        handleTankMovement(e) {
+            const container = this.$refs.tankContainer
+            const rect = container.getBoundingClientRect()
+            const x = e.clientX - rect.left
+            const y = e.clientY - rect.top
+            const rotateX = (y - rect.height / 2) * 0.1
+            const rotateY = (x - rect.width / 2) * 0.1
+
+            this.tankPosition = {
+                transform: `translate(${rotateY * 0.5}px, ${rotateX * 0.5}px) rotate(${rotateY * 0.02}deg)`
+            }
+        },
+        handleFeatureClick(feature) {
+            // Добавляем эффект пульсации при клике
+            const elements = document.querySelectorAll('.feature-card')
+            elements.forEach(el => el.classList.add('feature-pulse'))
+            setTimeout(() => {
+                elements.forEach(el => el.classList.remove('feature-pulse'))
+            }, 500)
+        },
+        handleButtonHover() {
+            // Добавляем эффект свечения при наведении
+            const button = document.querySelector('.play-button')
+            button.classList.add('button-hover')
+        },
+        handleButtonLeave() {
+            const button = document.querySelector('.play-button')
+            button.classList.remove('button-hover')
+        },
+        getFeatureDelay(index) {
+            return {
+                animationDelay: `${index * 0.2}s`
+            }
+        },
+        startCountdown() {
+            const targetDate = new Date('2024-12-31').getTime()
+
+            setInterval(() => {
+                const now = new Date().getTime()
+                const distance = targetDate - now
+
+                this.countdownData = {
+                    days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+                }
+            }, 1000)
+        },
+        handleTitleIntersect(entries) {
+            if (entries[0].isIntersecting) {
+                this.titleVisible = true
+            }
+        },
+        handleCountdownIntersect(entries) {
+            if (entries[0].isIntersecting) {
+                entries[0].target.classList.add('countdown-visible')
+            }
+        }
+    },
+    beforeDestroy() {
+        window.removeEventListener('scroll', this.handleScroll)
     }
 }
 </script>
 
 <style scoped>
-/* Анимации для появления элементов */
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
+/* Базовые анимации */
+.transform {
+    transition: all 0.3s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+/* Анимация логотипа */
+.logo-animation {
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Анимация заголовка */
+.title-animation {
     opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
 }
 
-/* Анимация для кнопок */
-.glow-button {
-    position: relative;
-    overflow: hidden;
+.title-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.glow-button::after {
-    content: '';
+/* Эффект свечения текста */
+.glow-text {
+    text-shadow: 0 0 10px rgba(177, 255, 0, 0.5);
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0%, 100% { text-shadow: 0 0 10px rgba(177, 255, 0, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(177, 255, 0, 0.8); }
+}
+
+/* Анимация кнопки Play */
+.play-button {
+    transition: all 0.3s ease;
+}
+
+.button-hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(177, 255, 0, 0.3);
+}
+
+.button-glow {
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent,
-        rgba(177, 255, 0, 0.1),
-        transparent
-    );
+    background: linear-gradient(45deg, transparent, rgba(177, 255, 0, 0.1), transparent);
     transform: rotate(45deg);
-    animation: glow 3s linear infinite;
+    animation: buttonGlow 2s linear infinite;
 }
 
-@keyframes glow {
+@keyframes buttonGlow {
     0% { transform: translateX(-100%) rotate(45deg); }
     100% { transform: translateX(100%) rotate(45deg); }
 }
 
-/* Анимация для карточек */
+/* Анимация карточек функций */
 .feature-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: featureAppear 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px) skewX(-12deg);
 }
 
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(177, 255, 0, 0.1);
+@keyframes featureAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0) skewX(-12deg);
+    }
 }
 
-/* Анимация для текста */
-.highlight-text {
-    position: relative;
-    display: inline-block;
+.feature-pulse {
+    animation: pulse 0.5s ease;
 }
 
-.highlight-text::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
+@keyframes pulse {
+    0%, 100% { transform: scale(1) skewX(-12deg); }
+    50% { transform: scale(1.05) skewX(-12deg); }
+}
+
+/* Анимация иконок */
+.icon-pulse {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Анимация хабов разработки */
+.hub-card {
+    transition: all 0.3s ease;
+}
+
+.hub-active {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(177, 255, 0, 0.2);
+}
+
+/* Анимация снежинок */
+.snowfall-container {
+    position: fixed;
+    top: 0;
     left: 0;
-    background-color: #B1FF00;
-    transition: width 0.3s ease;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
 }
 
-.highlight-text:hover::after {
-    width: 100%;
+.snowflake {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+    animation: snowfall var(--fall-duration) linear infinite;
+    animation-delay: var(--fall-delay);
+    opacity: 0.7;
 }
+
+@keyframes snowfall {
+    0% {
+        transform: translateY(-100px);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+/* Анимация счётчика */
+.countdown-container {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+}
+
+.countdown-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.countdown-number {
+    display: inline-block;
+    background: rgba(177, 255, 0, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin: 0 0.5rem;
+    min-width: 80px;
+    animation: numberPulse 1s ease-in-out infinite;
+}
+
+@keyframes numberPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Анимация прокрутки шапки */
+.header-scrolled {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    animation: headerSlideDown 0.5s ease;
+}
+
+@keyframes headerSlideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Анимация танка */
+.tank-container {
+    perspective: 1000px;
+}
+
+.tank-element {
+    transition: transform 0.1s ease;
+    transform-style: preserve-3d;
+}
+
+.text-aw {
+    transition: color 0.3s ease;
+}
+
+.text-aw:hover {
+                   text-shadow: 0 0 10px rgba(177, 255, 0, 0.5);
+               }
+
+/* Анимация появления текста */
+p {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Добавляем задержку для каждого параграфа */
+p:nth-child(1) { animation-delay: 0.2s; }
+p:nth-child(2) { animation-delay: 0.4s; }
+p:nth-child(3) { animation-delay: 0.6s; }
 </style>
