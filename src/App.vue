@@ -81,7 +81,6 @@
             </div>
 
             <!-- Центры разработки -->
-            <!-- Добавляем секцию Our Story после счетчика -->
             <div class="text-center mb-16">
                 <div class="flex flex-col items-center justify-center">
                     <!-- Иконка и заголовок -->
@@ -111,7 +110,6 @@
                         </p>
                     </div>
 
-                    <!-- Development Hubs -->
                     <div class="grid grid-cols-3 gap-8 w-full mt-12">
                         <div v-for="(hub, index) in developmentHubs" :key="hub.name"
 
@@ -215,7 +213,6 @@ export default {
             }
         },
         handleFeatureClick(feature) {
-            // Добавляем эффект пульсации при клике
             const elements = document.querySelectorAll('.feature-card')
             elements.forEach(el => el.classList.add('feature-pulse'))
             setTimeout(() => {
@@ -223,7 +220,6 @@ export default {
             }, 500)
         },
         handleButtonHover() {
-            // Добавляем эффект свечения при наведении
             const button = document.querySelector('.play-button')
             button.classList.add('button-hover')
         },
@@ -268,12 +264,10 @@ export default {
 </script>
 
 <style scoped>
-/* Базовые анимации */
 .transform {
     transition: all 0.3s ease;
 }
 
-/* Анимация логотипа */
 .logo-animation {
     animation: logoFloat 3s ease-in-out infinite;
 }
@@ -283,7 +277,6 @@ export default {
     50% { transform: translateY(-10px); }
 }
 
-/* Анимация заголовка */
 .title-animation {
     opacity: 0;
     transform: translateY(20px);
@@ -295,7 +288,6 @@ export default {
     transform: translateY(0);
 }
 
-/* Эффект свечения текста */
 .glow-text {
     text-shadow: 0 0 10px rgba(177, 255, 0, 0.5);
     animation: textPulse 2s ease-in-out infinite;
@@ -306,7 +298,6 @@ export default {
     50% { text-shadow: 0 0 20px rgba(177, 255, 0, 0.8); }
 }
 
-/* Анимация кнопки Play */
 .play-button {
     transition: all 0.3s ease;
 }
@@ -332,7 +323,6 @@ export default {
     100% { transform: translateX(100%) rotate(45deg); }
 }
 
-/* Анимация карточек функций */
 .feature-card {
     animation: featureAppear 0.5s ease forwards;
     opacity: 0;
@@ -355,7 +345,6 @@ export default {
     50% { transform: scale(1.05) skewX(-12deg); }
 }
 
-/* Анимация иконок */
 .icon-pulse {
     animation: iconPulse 2s ease-in-out infinite;
 }
@@ -365,7 +354,6 @@ export default {
     50% { transform: scale(1.2); }
 }
 
-/* Анимация хабов разработки */
 .hub-card {
     transition: all 0.3s ease;
 }
@@ -375,7 +363,6 @@ export default {
     box-shadow: 0 10px 20px rgba(177, 255, 0, 0.2);
 }
 
-/* Анимация снежинок */
 .snowfall-container {
     position: fixed;
     top: 0;
@@ -406,7 +393,6 @@ export default {
     }
 }
 
-/* Анимация счётчика */
 .countdown-container {
     opacity: 0;
     transform: translateY(20px);
@@ -433,7 +419,6 @@ export default {
     50% { transform: scale(1.05); }
 }
 
-/* Анимация прокрутки шапки */
 .header-scrolled {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
@@ -454,7 +439,6 @@ export default {
     }
 }
 
-/* Анимация танка */
 .tank-container {
     perspective: 1000px;
 }
@@ -472,7 +456,6 @@ export default {
                    text-shadow: 0 0 10px rgba(177, 255, 0, 0.5);
                }
 
-/* Анимация появления текста */
 p {
     opacity: 0;
     transform: translateY(20px);
@@ -486,7 +469,6 @@ p {
     }
 }
 
-/* Добавляем задержку для каждого параграфа */
 p:nth-child(1) { animation-delay: 0.2s; }
 p:nth-child(2) { animation-delay: 0.4s; }
 p:nth-child(3) { animation-delay: 0.6s; }
